@@ -9,7 +9,7 @@ import lcmsLogoHover from "./assets/logo-3h.png"
 type NavigationItem = {
 	href: string;
 	logo: string;
-	hover: string;
+	hoverLogo: string;
 	alt: string;
 }
 
@@ -17,19 +17,19 @@ const navigationItems: NavigationItem[] = [
 	{
 		href: "#simintech",
 		logo: simintechLogo,
-		hover: simintechLogoHover,
+		hoverLogo: simintechLogoHover,
 		alt: "simintech",
 	},
 	{
 		href: "#bsexalead",
 		logo: dassaultLogo,
-		hover: dassaultLogoHover,
+		hoverLogo: dassaultLogoHover,
 		alt: "bsexalead",
 	},
 	{
 		href: "#lcms",
 		logo: lcmsLogo,
-		hover: lcmsLogoHover,
+		hoverLogo: lcmsLogoHover,
 		alt: "lcms",
 	}
 ]
@@ -44,14 +44,19 @@ function Header() {
 					<ul>
 						{
 							navigationItems.map((navigationItem) => (
-								<li>
+								<li key={navigationItem.href}>
 									<a href={navigationItem.href}>
 										<img src={navigationItem.logo} alt={navigationItem.alt} />
-										<img src={navigationItem.hover} alt="" />
+										<img src={navigationItem.hoverLogo} alt="" />
 									</a>
 								</li>
 							))
 						}
+						<li>
+							<a href="#contacts">
+								<span><span>Контакты</span><i></i></span>
+							</a>
+						</li>
 					</ul>
 				</nav>
 		</header>
