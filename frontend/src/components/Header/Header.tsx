@@ -5,6 +5,7 @@ import dassaultLogo from "./assets/logo-2.png"
 import dassaultLogoHover from "./assets/logo-2h.png"
 import lcmsLogo from "./assets/logo-3.png"
 import lcmsLogoHover from "./assets/logo-3h.png"
+import styles from "./Header.module.css"
 
 type NavigationItem = {
 	href: string;
@@ -36,24 +37,24 @@ const navigationItems: NavigationItem[] = [
 
 function Header() {
 	return(
-		<header>
-			<a href="#main">
+		<header className={styles.header}>
+			<a href="#main" className={styles.brand}>
 				<img src={mainLogo} alt="3VServices" />
 			</a>
 				<nav aria-label="Основная навигация">
-					<ul>
+					<ul className={styles.navigationList}>
 						{
 							navigationItems.map((navigationItem) => (
 								<li key={navigationItem.href}>
-									<a href={navigationItem.href}>
-										<img src={navigationItem.logo} alt={navigationItem.alt} />
-										<img src={navigationItem.hoverLogo} alt="" />
+									<a href={navigationItem.href} className={styles.productLink}>
+										<img src={navigationItem.logo} alt={navigationItem.alt} className={styles.logo} />
+										<img src={navigationItem.hoverLogo} alt="" className={styles.hoverLogo} />
 									</a>
 								</li>
 							))
 						}
 						<li>
-							<a href="#contacts">
+							<a href="#contacts" className={styles.contactsLink}>
 								<span><span>Контакты</span><i></i></span>
 							</a>
 						</li>
