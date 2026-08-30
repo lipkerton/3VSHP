@@ -12,3 +12,27 @@
     margin: 0;
     padding: 0;
 }
+.productLink {
+    position: relative;
+    display: inline-block;
+}
+.logo {
+    display: block;
+    opacity: 1;
+    transition: opacity 200ms ease;
+}
+.hoverLogo {
+    position: absolute;
+    inset: 0;
+    display: block;
+    opacity: 0;
+    transition: opacity 200ms ease;
+}
+.productLink:hover .logo,
+.productLink:focus-visible .logo {
+    opacity: 0;
+}
+.productLink:hover .hoverLogo,
+.productLink:focus-visible .hoverLogo {
+    opacity: 1;
+}
