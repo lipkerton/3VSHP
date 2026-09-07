@@ -36,3 +36,27 @@
 .productLink:focus-visible .hoverLogo {
     opacity: 1;
 }
+.contactsLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 20px;
+    border: 1px solid #2563eb;
+    border-radius: 999px;
+    color: #2563eb;
+    text-decoration: none;
+    transition:
+        color 200ms ease,
+        background-color 200ms ease;
+}
+.contactsLink:hover {
+    color: #ffffff;
+    background-color: #2563eb;
+}
+.contactsLink:focus-visible {
+    color: #ffffff;
+    background-color: #2563eb;
+    outline: 3px solid rgb(37 99 235 / 30%);
+    outline-offset: 3px;
+}

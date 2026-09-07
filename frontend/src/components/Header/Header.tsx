@@ -55,7 +55,7 @@ function Header() {
 						}
 						<li>
 							<a href="#contacts" className={styles.contactsLink}>
-								<span><span>Контакты</span><i></i></span>
+								Контакты
 							</a>
 						</li>
 					</ul>
