@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.20)
+project(ThreeVServiceBackend LANGUAGES CXX)
+add_executable(ThreeVServiceBackend src/main.cpp)
+target_compile_features(ThreeVServiceBackend PRIVATE cxx_std_20)
+target_compile_options(ThreeVServiceBackend PRIVATE -Wall -Wextra -Wpedantic)
