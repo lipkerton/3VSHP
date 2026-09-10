@@ -1,16 +1,32 @@
-#include <winsock2.h>
+#if defined(_WIN32)
+    #include <winsock2.h>
+#elif defined(__linux__) || defined(__APPLE__)
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <unistd.h>
+#endif
 #include <iostream>
 
+#if defined(_WIN32)
+    using sock_type = SOCKET;
+    SOCKET const invalid_socket = INVALID_SOCKET;
+#elif defined(__linux__) || defined(__APPLE__)
+    using sock_type = int;
+    int const invalid_socket = -1;
+#endif
 
 int main() {
-    WSADATA wsa_data {};
-    int const startup_result = WSAStartup(MAKEWORD(2, 2), &wsa_data);
-    if (startup_result != 0) {
-        std::cerr << "Error while initializing Winsock! Error code: " << startup_result << "\n";
-        return startup_result;
-    }
-    SOCKET const listening_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (listening_socket == INVALID_SOCKET) {
+    #if defined(_WIN32)
+        WSADATA wsa_data {};
+        int const startup_result = WSAStartup(MAKEWORD(2, 2), &wsa_data);
+        if (startup_result != 0) {
+            std::cerr << "Error while initializing Winsock! Error code: " << startup_result << "\n";
+            return startup_result;
+        }
+    #endif
+
+    sock_type const listening_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (listening_socket == invalid_socket) {
         int const wsa_error = WSAGetLastError();
         std::cerr << "Error while initializing socket! Error code: " << wsa_error << "\n";
         WSACleanup();
@@ -41,8 +57,8 @@ int main() {
         return wsa_error;
     }
     std::cout << "ThreeVServiceBackend is running!\n";
-    SOCKET const client_socket = accept(listening_socket, nullptr, nullptr);
-    if (client_socket == INVALID_SOCKET) {
+    sock_type const client_socket = accept(listening_socket, nullptr, nullptr);
+    if (client_socket == invalid_socket) {
         int const wsa_error = WSAGetLastError();
         std::cerr << "Error while accepting client connection! Error code: " << wsa_error << "\n";
         closesocket(listening_socket);
