@@ -95,6 +95,28 @@ int main() {
     }
     std::cout << "Client connected!\n";
     std::array<char, 4096> request_buffer {};
+    auto const recv_result = recv(
+        client_socket,
+        request_buffer.data(),
+        static_cast<int>(request_buffer.size()),
+        0
+    );
+    if (recv_result == socket_error) {
+        int const error_code = get_last_socket_error();
+        std::cerr << "Error while reading system buffer! Error code: " << error_code << "\n";
+        close_socket(client_socket);
+        close_socket(listening_socket);
+        cleanup_networking();
+        return error_code;
+    } else if (recv_result == 0) {
+        std::cout << "Client has not send any messages and closed the connection!\n";
+    } else {
+        std::cout << "Size of bytes from system's buffer: " << recv_result << "\n";
+        std::cout.write(
+            request_buffer.data(),
+            static_cast<std::streamsize>(recv_result)
+        ) << "\n";
+    }
     int const close_client_result = close_socket(client_socket);
     if (close_client_result == socket_error) {
         int const error_code = get_last_socket_error();
