@@ -117,7 +117,12 @@ int main() {
             request_buffer.data(),
             static_cast<std::streamsize>(recv_result)
         ) << "\n";
-        std::string_view const response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 2\r\nConnection: close\r\n\r\nOK";
+        std::string_view const response = (
+            "HTTP/1.1 200 OK\r\n"
+            "Content-Type: text/plain\r\n"
+            "Content-Length: 2\r\n"
+            "Connection: close\r\n\r\nOK"
+        );
         auto const send_result = send(client_socket, response.data(), static_cast<int>(response.size()), 0);
         if (send_result == socket_error) {
             int const error_code = get_last_socket_error();
