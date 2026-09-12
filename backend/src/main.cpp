@@ -9,6 +9,7 @@
 #include <string_view>
 #include <iostream>
 #include <array>
+#include <cstddef>
 
 #if defined(_WIN32)
     using sock_type = SOCKET;
@@ -123,16 +124,25 @@ int main() {
             "Content-Length: 2\r\n"
             "Connection: close\r\n\r\nOK"
         );
-        auto const send_result = send(client_socket, response.data(), static_cast<int>(response.size()), 0);
-        if (send_result == socket_error) {
-            int const error_code = get_last_socket_error();
-            std::cerr << "Error while sending response! Error code: " << error_code << "\n";
-            close_socket(listening_socket);
-            close_socket(client_socket);
-            cleanup_networking();
-            return error_code;       
+        std::size_t total_sent = 0;
+        while (total_sent < response.size()) {
+            auto const send_result = send(
+                client_socket,
+                response.data() + total_sent,
+                static_cast<int>(response.size() - total_sent),
+                0
+            );
+            if (send_result == socket_error) {
+                int const error_code = get_last_socket_error();
+                std::cerr << "Error while sending response! Error code: " << error_code << "\n";
+                close_socket(client_socket);
+                close_socket(listening_socket);
+                cleanup_networking();
+                return error_code;       
+            }
+            total_sent += static_cast<std::size_t>(send_result);
         }
-        std::cout << "Size of bytes in server response: " << send_result << "\n";
+        std::cout << "Size of bytes in server response: " << total_sent << "\n";
     }
     int const close_client_result = close_socket(client_socket);
     if (close_client_result == socket_error) {
