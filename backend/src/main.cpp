@@ -34,6 +34,14 @@ int cleanup_networking() {
     #endif
 }
 
+int get_last_socket_error() {
+    #if defined(_WIN32)
+        return WSAGetLastError();
+    #elif defined(__linux__) || defined(__APPLE__)
+        return errno;
+    #endif
+}
+
 int main() {
     #if defined(_WIN32)
         WSADATA wsa_data {};
