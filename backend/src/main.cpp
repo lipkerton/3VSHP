@@ -6,6 +6,7 @@
     #include <unistd.h>
     #include <cerrno>
 #endif
+#include <string_view>
 #include <iostream>
 #include <array>
 
@@ -116,6 +117,17 @@ int main() {
             request_buffer.data(),
             static_cast<std::streamsize>(recv_result)
         ) << "\n";
+        std::string_view const response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 2\r\nConnection: close\r\n\r\nOK";
+        auto const send_result = send(client_socket, response.data(), static_cast<int>(response.size()), 0);
+        if (send_result == socket_error) {
+            int const error_code = get_last_socket_error();
+            std::cerr << "Error while sending response! Error code: " << error_code << "\n";
+            close_socket(listening_socket);
+            close_socket(client_socket);
+            cleanup_networking();
+            return error_code;       
+        }
+        std::cout << "Size of bytes in server response: " << send_result << "\n";
     }
     int const close_client_result = close_socket(client_socket);
     if (close_client_result == socket_error) {
