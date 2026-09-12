@@ -18,6 +18,18 @@
     int const socket_error = -1;
 #endif
 
+int close_socket(sock_type socket_handle) {
+    #if defined(_WIN32)
+        return closesocket(socket_handle);
+    #elif defined(__linux__) || defined(__APPLE__)
+        return close(socket_handle);
+    #endif
+}
+
+int cleanup_networking() {
+    
+}
+
 int main() {
     #if defined(_WIN32)
         WSADATA wsa_data {};
@@ -55,7 +67,7 @@ int main() {
             int const error_code = errno;
         #endif
         std::cerr << "Error while binding address to the socket! Error code: " << error_code << "\n";
-        closesocket(listening_socket);
+        close_socket(listening_socket);
         WSACleanup();
         return error_code;
     }
@@ -67,7 +79,7 @@ int main() {
             int const error_code = errno;
         #endif
         std::cerr << "Error while listening! Error code: " << error_code << "\n";
-        closesocket(listening_socket);
+        close_socket(listening_socket);
         WSACleanup();
         return error_code;
     }
@@ -80,12 +92,12 @@ int main() {
             int const error_code = errno;
         #endif
         std::cerr << "Error while accepting client connection! Error code: " << error_code << "\n";
-        closesocket(listening_socket);
+        close_socket(listening_socket);
         WSACleanup();
         return error_code;
     }
     std::cout << "Client connected!\n";
-    int const close_client_result = closesocket(client_socket);
+    int const close_client_result = close_socket(client_socket);
     if (close_client_result == socket_error) {
         #if defined(_WIN32)
             int const error_code = WSAGetLastError();
@@ -93,11 +105,11 @@ int main() {
             int const error_code = errno;
         #endif
         std::cerr << "Error while closing client socket! Error code: " << error_code << "\n";
-        closesocket(listening_socket);
+        close_socket(listening_socket);
         WSACleanup();
         return error_code;
     }
-    int const close_listening_result = closesocket(listening_socket);
+    int const close_listening_result = close_socket(listening_socket);
     if (close_listening_result == socket_error) {
         #if defined(_WIN32)
             int const error_code = WSAGetLastError();
