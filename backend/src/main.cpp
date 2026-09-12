@@ -27,7 +27,11 @@ int close_socket(sock_type socket_handle) {
 }
 
 int cleanup_networking() {
-    
+    #if defined(_WIN32)
+        return WSACleanup();
+    #elif defined(__linux__) || defined(__APPLE__)
+        return 0;
+    #endif
 }
 
 int main() {
@@ -48,7 +52,7 @@ int main() {
             int const error_code = errno;
         #endif
         std::cerr << "Error while initializing socket! Error code: " << error_code << "\n";
-        WSACleanup();
+        cleanup_networking();
         return error_code;
     }
     sockaddr_in server_address {};
@@ -68,7 +72,7 @@ int main() {
         #endif
         std::cerr << "Error while binding address to the socket! Error code: " << error_code << "\n";
         close_socket(listening_socket);
-        WSACleanup();
+        cleanup_networking();
         return error_code;
     }
     int const listen_result = listen(listening_socket, SOMAXCONN);
@@ -80,7 +84,7 @@ int main() {
         #endif
         std::cerr << "Error while listening! Error code: " << error_code << "\n";
         close_socket(listening_socket);
-        WSACleanup();
+        cleanup_networking();
         return error_code;
     }
     std::cout << "ThreeVServiceBackend is running!\n";
@@ -93,7 +97,7 @@ int main() {
         #endif
         std::cerr << "Error while accepting client connection! Error code: " << error_code << "\n";
         close_socket(listening_socket);
-        WSACleanup();
+        cleanup_networking();
         return error_code;
     }
     std::cout << "Client connected!\n";
@@ -106,7 +110,7 @@ int main() {
         #endif
         std::cerr << "Error while closing client socket! Error code: " << error_code << "\n";
         close_socket(listening_socket);
-        WSACleanup();
+        cleanup_networking();
         return error_code;
     }
     int const close_listening_result = close_socket(listening_socket);
@@ -117,10 +121,10 @@ int main() {
             int const error_code = errno;
         #endif
         std::cerr << "Error while closing socket! Error code: " << error_code << "\n";
-        WSACleanup();
+        cleanup_networking();
         return error_code;
     }
-    int const cleanup_result = WSACleanup();
+    int const cleanup_result = cleanup_networking();
     if (cleanup_result == socket_error) {
         #if defined(_WIN32)
             int const error_code = WSAGetLastError();
