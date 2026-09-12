@@ -7,6 +7,7 @@
     #include <cerrno>
 #endif
 #include <iostream>
+#include <array>
 
 #if defined(_WIN32)
     using sock_type = SOCKET;
@@ -93,6 +94,7 @@ int main() {
         return error_code;
     }
     std::cout << "Client connected!\n";
+    std::array<char, 4096> request_buffer {};
     int const close_client_result = close_socket(client_socket);
     if (close_client_result == socket_error) {
         int const error_code = get_last_socket_error();
