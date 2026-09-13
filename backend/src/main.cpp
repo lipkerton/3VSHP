@@ -97,26 +97,39 @@ int main() {
     }
     std::cout << "Client connected!\n";
     std::array<char, 4096> request_buffer {};
-    auto const recv_result = recv(
-        client_socket,
-        request_buffer.data(),
-        static_cast<int>(request_buffer.size()),
-        0
-    );
-    if (recv_result == socket_error) {
-        int const error_code = get_last_socket_error();
-        std::cerr << "Error while reading system buffer! Error code: " << error_code << "\n";
-        close_socket(client_socket);
-        close_socket(listening_socket);
-        cleanup_networking();
-        return error_code;
-    } else if (recv_result == 0) {
-        std::cout << "Client has not send any messages and closed the connection!\n";
+    std::size_t total_received = 0;
+    bool headers_complete = false;
+    while ((headers_complete == false) && (total_received < request_buffer.size())) {
+        auto const recv_result = recv(
+            client_socket,
+            request_buffer.data() + total_received,
+            static_cast<int>(request_buffer.size() - total_received),
+            0
+        );
+        if (recv_result == socket_error) {
+            int const error_code = get_last_socket_error();
+            std::cerr << "Error while reading system buffer! Error code: " << error_code << "\n";
+            close_socket(client_socket);
+            close_socket(listening_socket);
+            cleanup_networking();
+            return error_code;
+        } else if (recv_result == 0) {
+            std::cout << "Client has not send any messages and closed the connection!\n";
+            break;
+        } else {
+            total_received += static_cast<std::size_t>(recv_result);
+            std::string_view const current_request {request_buffer.data(), total_received};
+            headers_complete = current_request.find("\r\n\r\n") != std::string_view::npos;
+        }
+    }
+    std::string_view const request_view {request_buffer.data(), total_received};
+    if (headers_complete != true) {
+        std::cout << "Request is incorrect or too large!\n";
     } else {
-        std::cout << "Size of bytes from system's buffer: " << recv_result << "\n";
+        std::cout << "Size of bytes from system's buffer: " << total_received << "\n";
         std::cout.write(
             request_buffer.data(),
-            static_cast<std::streamsize>(recv_result)
+            static_cast<std::streamsize>(total_received)
         ) << "\n";
         std::string_view const response = (
             "HTTP/1.1 200 OK\r\n"
