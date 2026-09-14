@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(ThreeVService LANGUAGES CXX)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(Drogon CONFIG REQUIRED)
 add_executable(ThreeVServiceRawSocket src/interfaces/raw_socket/main.cpp)
 target_compile_features(ThreeVServiceRawSocket PRIVATE cxx_std_20)

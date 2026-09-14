@@ -24,4 +24,6 @@ dist-ssr
 *.sw?
 
 # CMake build results
-backend/build/*
+/backend/build/*
+/backend/build-conan/*
+/backend/CMakeUserPresets.json
