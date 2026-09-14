@@ -1,0 +1,13 @@
+[requires]
+drogon/1.9.13
+
+[options]
+drogon/*:with_boost=False
+openssl/*:no_apps=True
+
+[conf]
+tools.cmake.cmaketoolchain:generator=Ninja
+
+[generators]
+CMakeDeps
+CMakeToolchain
