@@ -1,5 +1,3 @@
-#include <drogon/drogon.h>
-
 #include "HealthController.h"
 
 
