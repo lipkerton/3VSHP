@@ -1,3 +1,5 @@
+#include <iostream>
+#include <exception>
 #include <drogon/drogon.h>
 
 int main(int argc, char* argv[]) {
@@ -10,7 +12,7 @@ int main(int argc, char* argv[]) {
         drogon_app.loadConfigFile(argv[1]);
     } 
     catch(const std::exception& error) {
-        std::cerr << error.what();
+        std::cerr << error.what() << "\n";
         return 1;
     }
     drogon_app.run();
