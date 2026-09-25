@@ -1,8 +1,8 @@
-#include "HealthController.h"
+#include "ContactController.h"
 #include <json/json.h>
 
 namespace three_v_service::interfaces::http {
-    void HealthController::asyncHandleHttpRequest(
+    void ContactController::asyncHandleHttpRequest(
         drogon::HttpRequestPtr const&,
         std::function<void(drogon::HttpResponsePtr const&)>&& callback
     ) {
