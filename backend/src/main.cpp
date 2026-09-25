@@ -9,8 +9,9 @@ int main(int argc, char* argv[]) {
     try {
         drogon_app.loadConfigFile(argv[1]);
     } 
-    catch(std::exception error) {
-        error.what();
+    catch(const std::exception& error) {
+        std::cerr << error.what();
+        return 1;
     }
     drogon_app.run();
 }
