@@ -5,7 +5,7 @@
 namespace three_v_service::interfaces::http {
     class ContactController final : public drogon::HttpSimpleController<ContactController> {
         public: void asyncHandleHttpRequest(
-            drogon::HttpRequestPtr const&,
+            drogon::HttpRequestPtr const& request,
             std::function<void(drogon::HttpResponsePtr const&)>&& callback
         )override;
         PATH_LIST_BEGIN
