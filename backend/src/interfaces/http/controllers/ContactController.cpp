@@ -14,6 +14,8 @@ namespace three_v_service::interfaces::http {
             json_value["error"] = "invalid_json";
             response = drogon::HttpResponse::newHttpJsonResponse(json_value);
             response->setStatusCode(drogon::k400BadRequest);
+            callback(response);
+            return;
         }
         Json::Value const& request_data = *request_json;
         if (
