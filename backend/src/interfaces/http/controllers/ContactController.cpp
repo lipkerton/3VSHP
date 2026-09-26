@@ -15,6 +15,15 @@ namespace three_v_service::interfaces::http {
             json_value["error"] = "invalid_json";
             response = drogon::HttpResponse::newHttpJsonResponse(json_value);
             response->setStatusCode(drogon::k400BadRequest);
+        } else if (
+            !request_data.isObject() 
+            || !request_data.isMember("email")
+            || !request_data["email"].isString()
+            || request_data["email"].asString() == ""
+        ) {
+            json_value["error"] = "invalid_email";
+            response = drogon::HttpResponse::newHttpJsonResponse(json_value);
+            response->setStatusCode(drogon::k422UnprocessableEntity);
         } else {
             json_value["status"] = "ok";
             response = drogon::HttpResponse::newHttpJsonResponse(json_value);
